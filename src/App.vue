@@ -1,48 +1,48 @@
 <template>
   <div id="app">
     <Navbar />
-    <img alt="Vue logo" src="./assets/logo.png">
+    <img alt="Vue logo" src="./assets/logo.png" />
     <h1>{{ title }}</h1>
-    <HelloWorld msg="Hello World! Welcome to Your Vue.js App"/>
+    <HelloWorld msg="Hello World! Welcome to Your Vue.js App" />
     <AllFriends :friends="friends" @delete="deleteFriend" />
     <OnlineFriends :friends="friends" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-import Navbar from './components/Navbar.vue'
-import AllFriends from './components/AllFriends.vue'
-import OnlineFriends from './components/OnlineFriends.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import Navbar from "./components/Navbar.vue";
+import AllFriends from "./components/AllFriends.vue";
+import OnlineFriends from "./components/OnlineFriends.vue";
 
 export default {
-  name: 'App',
-  data () {
+  name: "App",
+  data() {
     return {
-      title: 'Learning Vue',
+      title: "Learning Vue",
       friends: [
-        { name: 'Mario', online: true },
-        { name: 'Luigi', online: false },
-        { name: 'Toad', online: true },
-        { name: 'Bowser', online: false }
-      ]
-    }
+        { name: "Mario", online: true },
+        { name: "Luigi", online: false },
+        { name: "Toad", online: true },
+        { name: "Bowser", online: false },
+      ],
+    };
   },
   components: {
     HelloWorld,
     Navbar,
     AllFriends,
-    OnlineFriends
+    OnlineFriends,
   },
   methods: {
-    deleteFriend (payload) {
-      console.log(payload)
-      this.friends = this.friends.filter(friend => {
-        return friend.name !== payload.name
-      })
-    }
-  }
-}
+    deleteFriend(payload) {
+      console.log(payload);
+      this.friends = this.friends.filter((friend) => {
+        return friend.name !== payload.name;
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
