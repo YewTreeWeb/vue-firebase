@@ -1,7 +1,22 @@
 <template>
   <nav>
     <ul>
-      <li v-for="(item, index) in items" :key="index"><a v-bind:href="item.link">{{ item.text }}</a></li>
+      <li v-for="(item, index) in items" :key="index">
+        <router-link :to="{ name: item.link }">{{ item.link }}</router-link>
+        <span v-if="index != Object.keys(items).length - 1">|</span>
+      </li>
+    </ul>
+    <h2>User Profiles</h2>
+    <ul>
+      <li v-for="(id, index) in userIds" :key="index">
+        <router-link :to="{ name: 'Profile', params: { user_id: id } }"><span>Profile {{ id }}</span></router-link>
+      </li>
+    </ul>
+    <h2>Navigation Controls</h2>
+    <ul>
+      <li><button @click="goBack">Go Back</button></li>
+      <li><button @click="goHome">Redirect to Home</button></li>
+      <li><button @click="goForward">Go Forward</button></li>
     </ul>
   </nav>
 </template>
@@ -12,27 +27,52 @@ export default {
   data () {
     return {
       items: [
-        { text: 'Home', link: '/' },
-        { text: 'About', link: '/about' },
-        { text: 'Contact', link: '/contact' }
-      ]
+        { link: 'Home' },
+        { link: 'About' },
+        { link: 'Profile' }
+      ],
+      userIds: ['1', '2', '3', '4']
+    }
+  },
+  methods: {
+    goHome () {
+      this.$router.push({ name: 'Home' })
+    },
+    goBack () {
+      this.$router.go(-1)
+    },
+    goForward () {
+      this.$router.go(1)
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 nav {
-  text-align: center;
-  ul{
-    padding: 0;
+  padding: 30px;
+
+  ul {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    flex-flow: row wrap;
+    list-style-type: none;
+    padding-left: unset;
     > li{
-      list-style-type: none;
-      margin: 0;
+      a {
+        font-weight: bold;
+        color: #2c3e50;
+
+        &.router-link-exact-active {
+          color: #42b983;
+        }
+      }
+      span{
+        margin: 0 5px;
+      }
     }
   }
+
 }
 </style>
