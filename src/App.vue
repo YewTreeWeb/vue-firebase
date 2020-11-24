@@ -1,12 +1,19 @@
 <template>
-  <div id="app">
-    <nav id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+  <main id="app">
+    <Navbar />
     <router-view />
-  </div>
+  </main>
 </template>
+
+<script>
+import Navbar from "@/components/Navbar";
+export default {
+  name: "App",
+  components: {
+    Navbar
+  }
+};
+</script>
 
 <style lang="scss">
 #app {
