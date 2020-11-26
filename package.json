@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "firebase": "^8.1.1",
     "register-service-worker": "^1.7.1",
+    "slugify": "^1.4.6",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0"
   },
@@ -48,7 +49,10 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-undef": "off",
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",
