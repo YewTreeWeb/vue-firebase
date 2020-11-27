@@ -27,10 +27,32 @@ export default {
         minZoom: 3,
         streetViewControl: false
       })
-      console.log(firebase.auth().currentUser)
+
+      // display marker on map
+      db.collection('users').get().then(users => {
+        users.docs.forEach(doc => {
+          const data = doc.data()
+          if (data.geolocation) {
+            const marker = new google.maps.Marker({
+              position: {
+                lat: data.geolocation.lat,
+                lng: data.geolocation.lng
+              },
+              map
+            })
+            // add click event to marker
+            marker.addListener('click', () => {
+              this.$router.push({ name: 'ViewProfile', params: { id: doc.id } })
+            })
+          }
+        })
+      })
     }
   },
   mounted () {
+    // Get current user
+    const user = firebase.auth().currentUser
+
     // Get user geolocation
     if (navigator.geolocation) {
       if (process.env.NODE_ENV !== 'production' && window.console) {
@@ -45,11 +67,34 @@ export default {
             console.log('current position acquired')
             console.log(this.lat, this.lng)
           }
-
-          this.renderMap()
+          // Find user record and update geocoords
+          db.collection('users')
+            .where('user_id', '==', user.uid)
+            .get()
+            .then((snapshot) => {
+              snapshot.forEach((doc) => {
+                console.log('id is', doc.id)
+                db.collection('users')
+                  .doc(doc.id)
+                  .update({
+                    geolocation: {
+                      lat: pos.coords.latitude,
+                      lng: pos.coords.longitude
+                    }
+                  })
+              })
+            }).then(() => {
+              // Render map
+              this.renderMap()
+            })
+            .catch((err) => {
+              if (window.console) console.error(err)
+            })
         },
         (err) => {
-          console.error(err)
+          if (window.console) {
+            console.error(err)
+          }
           this.renderMap()
         },
         { maximumAge: 60000, timeout: 6000 }

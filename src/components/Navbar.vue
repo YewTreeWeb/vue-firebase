@@ -1,20 +1,25 @@
 <template>
   <nav class="deep-purple darken-1">
     <div class="nav-wrapper">
-      <router-link :to="{ name: 'Home' }" class="brand-logo">GeoNinjas!</router-link>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <router-link :to="{ name: 'Home' }" class="logo">GeoNinjas!</router-link>
+      <ul class="menu">
         <li v-for="(item, index) in navItems" :key="index">
           <router-link :to="{ name: item.url ? item.url : item.text }">
             {{ item.text }}
           </router-link>
         </li>
+      </ul>
+      <ul class="user">
         <li>
-           <router-link :to="{ name: 'Signup' }" v-if="!userStatus">Signup</router-link>
+          <router-link :to="{ name: 'Signup' }" v-if="!user"
+            >Signup</router-link
+          >
         </li>
         <li>
-           <router-link :to="{ name: 'Login' }" v-if="!userStatus">Login</router-link>
+          <router-link :to="{ name: 'Login' }" v-if="!user">Login</router-link>
         </li>
-        <li v-if="userStatus"><a @click="logout">Logout</a></li>
+        <li v-if="user">{{ user.email }}</li>
+        <li v-if="user"><a @click="logout">Logout</a></li>
       </ul>
     </div>
   </nav>
@@ -28,35 +33,65 @@ export default {
   name: 'Navbar',
   data () {
     return {
-      navItems: [
-        { text: 'Home', url: 'Home' }
-      ],
-      userStatus: false
+      navItems: [{ text: 'Home', url: 'Home' }, { text: 'Profile', url: 'ViewProfile' }],
+      // userStatus: false
+      user: null
     }
   },
   methods: {
-    loggedIn () {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          this.userStatus = true
-        }
-      })
-    },
+    // loggedIn () {
+    //   firebase.auth().onAuthStateChanged(user => {
+    //     if (user) {
+    //       this.userStatus = true
+    //     }
+    //   })
+    // },
     logout () {
-      firebase.auth().signOut().then(() => {
-        this.$router.push({ name: 'Home' })
-        this.userStatus = false
-      })
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push({ name: 'Login' })
+          // this.userStatus = false
+        })
     }
   },
-  mounted () {
-    this.loggedIn()
+  // mounted () {
+  // this.loggedIn()
+  // },
+  created () {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.user = user
+      } else {
+        this.user = null
+      }
+    })
   }
 }
 </script>
 
 <style lang="scss">
-.brand-logo{
-  left: 15px;
+.nav-wrapper {
+  display: flex;
+  place-content: center flex-start;
+  flex-flow: row nowrap;
+  .logo {
+    margin: auto 15px;
+    font-size: 2.4em;
+    font-weight: bold;
+  }
+  .menu {
+    text-align: center;
+    display: flex;
+    align-items: center;
+  }
+  .user {
+    margin-left: auto;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
 }
 </style>

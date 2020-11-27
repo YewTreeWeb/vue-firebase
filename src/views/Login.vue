@@ -39,7 +39,9 @@ export default {
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then((cred) => {
-            console.log('success', cred.user)
+            if (process.env.NODE_ENV !== 'production' && window.console) {
+              console.log('success', cred.user)
+            }
             this.$router.push({ name: 'Home' })
           })
           .catch((err) => {
