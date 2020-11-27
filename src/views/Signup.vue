@@ -27,6 +27,7 @@ import slugify from 'slugify'
 import db from '@/firebase/config'
 import firebase from 'firebase/app'
 import auth from 'firebase/auth'
+import functions from 'firebase/functions'
 export default {
   name: 'Signup',
   data () {
@@ -49,9 +50,9 @@ export default {
           lower: true
         })
         // Check if the alias already exists in the Firebase db
-        const ref = db.collection('users').doc(this.slug)
-        ref.get().then((doc) => {
-          if (doc.exists) {
+        const checkAlias = firebase.functions().httpsCallable('checkAlias')
+        checkAlias({ slug: this.slug }).then(result => {
+          if (!result.data.unique) {
             this.feedback = 'This alias already exists!'
           } else {
             firebase
@@ -59,9 +60,9 @@ export default {
               .createUserWithEmailAndPassword(this.email, this.password)
               .then((cred) => {
                 if (process.env.NODE_ENV !== 'production' && window.console) {
-                  console.log(cred.user, process.env.NODE_ENV)
+                  console.log(cred.user)
                 }
-                ref.set({
+                db.collection('users').doc(this.slug).set({
                   alias: this.alias,
                   geolocation: null,
                   user_id: cred.user.uid
